@@ -10,49 +10,57 @@ public class KHJBank {
     private static boolean isCreated = false; // 계좌등록여부
 
     public static void main(String[] args) {
-        boolean loggedIn = false;
-        while (!loggedIn) {
-            System.out.println("-------------------------------------");
-            System.out.println("1. 회원가입 | 2. 로그인 | 3. 종료");
-            System.out.println("-------------------------------------");
-            System.out.print("선택>");
-            int selectNo = sc.nextInt();
-            switch (selectNo) {
-                case 1:
-                    Login.register();
-                    break;
-                case 2:
-                    loggedIn = Login.login();
-                    break;
-                case 3:
-                    System.out.println("프로그램 종료");
-                    return;
-            }
-        }
+        boolean runProgram = true;
 
-        boolean run = true;
-        while (run) {
-            System.out.println("-------------------------------------");
-            System.out.println("1.계좌생성 | 2.계좌목록 | 3.예금 | 4.출금 | 5.종료");
-            System.out.println("-------------------------------------");
-            System.out.print("선택>");
-            int selectNo = sc.nextInt();
-            switch (selectNo) {
-                case 1:
-                    createAccount();
-                    break;
-                case 2:
-                    accountList();
-                    break;
-                case 3:
-                    deposit();
-                    break;
-                case 4:
-                    withdraw();
-                    break;
-                case 5:
-                    run = false;
-                    break;
+        while (runProgram) {
+            boolean loggedIn = false;
+            while (!loggedIn) {
+                System.out.println("-------------------------------------");
+                System.out.println("1. 회원가입 | 2. 로그인 | 3. 종료");
+                System.out.println("-------------------------------------");
+                System.out.print("선택>");
+                int selectNo = sc.nextInt();
+                switch (selectNo) {
+                    case 1:
+                        Login.register();
+                        break;
+                    case 2:
+                        loggedIn = Login.login();
+                        break;
+                    case 3:
+                        System.out.println("프로그램 종료");
+                        return;
+                }
+            }
+
+            boolean run = true;
+            while (run) {
+                System.out.println("-------------------------------------");
+                System.out.println("1.계좌생성 - 2.계좌목록 - 3.예금 - 4.출금 - 5.종료 - 6.로그아웃");
+                System.out.println("-------------------------------------");
+                System.out.print("선택>");
+                int selectNo = sc.nextInt();
+                switch (selectNo) {
+                    case 1:
+                        createAccount();
+                        break;
+                    case 2:
+                        accountList();
+                        break;
+                    case 3:
+                        deposit();
+                        break;
+                    case 4:
+                        withdraw();
+                        break;
+                    case 5:
+                        run = false;
+                        runProgram = false;
+                        break;
+                    case 6:
+                        run = false; // End the current session and go back to login menu
+                        break;
+                }
             }
         }
         System.out.println("프로그램 종료");
@@ -121,8 +129,9 @@ public class KHJBank {
 
     private static void createAccount() {
         String ano = PREFIX + String.format(new DecimalFormat("0000").format(++seq));
+        sc.nextLine(); // Clear the buffer
         System.out.print("소유주명>");
-        String owner = sc.next();
+        String owner = sc.nextLine(); // Use nextLine() to read the entire line
         int amount = 0;
         boolean validInput = false;
 
