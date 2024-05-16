@@ -13,9 +13,9 @@ public class Account {
     //메소드
     protected String getAno() { return ano; }
     protected void setAno(String ano) { this.ano = ano; }
-    protected String getOwner() {       return owner;   }
-    protected void setOwner(String owner) { this.owner = owner; }
-    protected int getBalance() {    return balance; }
+    protected String getOwner() { return owner;   }
+    protected void setOwner(String owner) {this.owner = owner; }
+    protected int getBalance() {return balance; }
     protected void setBalance(int balance) {this.balance = balance; }
     public void deposit(int amount) {
         this.balance+=amount;
