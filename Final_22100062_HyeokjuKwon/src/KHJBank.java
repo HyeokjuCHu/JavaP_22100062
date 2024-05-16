@@ -16,9 +16,9 @@ public class KHJBank {
             boolean loggedIn = false;
             while (!loggedIn) {
                 System.out.println("-------------------------------------");
-                System.out.println("1. 회원가입 | 2. 로그인 | 3. 종료");
+                System.out.println("1. Sign Up | 2. Sign in | 3. End");
                 System.out.println("-------------------------------------");
-                System.out.print("선택>");
+                System.out.print("Choice>");
                 int selectNo = sc.nextInt();
                 switch (selectNo) {
                     case 1:
@@ -28,7 +28,7 @@ public class KHJBank {
                         loggedIn = Login.login();
                         break;
                     case 3:
-                        System.out.println("프로그램 종료");
+                        System.out.println("End Program");
                         return;
                 }
             }
@@ -36,9 +36,9 @@ public class KHJBank {
             boolean run = true;
             while (run) {
                 System.out.println("-------------------------------------");
-                System.out.println("1.계좌생성 - 2.계좌목록 - 3.예금 - 4.출금 - 5.종료 - 6.로그아웃");
+                System.out.println("1.Create Account - 2.Account List - 3.Deposit - 4.Withdrawal - 5.End - 6.Log out");
                 System.out.println("-------------------------------------");
-                System.out.print("선택>");
+                System.out.print("Choice>");
                 int selectNo = sc.nextInt();
                 switch (selectNo) {
                     case 1:
@@ -63,12 +63,12 @@ public class KHJBank {
                 }
             }
         }
-        System.out.println("프로그램 종료");
+        System.out.println("Terminated Program");
     }
 
     private static void withdraw() {
         if (!isRegistered()) {
-            System.out.println("먼저 계좌등록을 하세요");
+            System.out.println("No Account Exsit.");
             return; // 메소드 실행 종료.
         }
         accountList();
