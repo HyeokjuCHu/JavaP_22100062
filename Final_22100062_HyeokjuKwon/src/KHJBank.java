@@ -68,26 +68,26 @@ public class KHJBank {
 
     private static void withdraw() {
         if (!isRegistered()) {
-            System.out.println("No Account Exsit.");
+            System.out.println("No Account Exist.");
             return; // 메소드 실행 종료.
         }
         accountList();
-        System.out.println("출금할 계좌번호를 선택하세요>");
+        System.out.println("Choose account that you want to withdraw>");
         Account account;
         while (true) {
             String ano = sc.next(); // 출금 계좌번호 입력
             account = findAccount(ano); // 입력받은 정보로 계좌조회
             if (account == null)
-                System.out.println("계좌번호를 확인하세요");
+                System.out.println("Check your account number");
             else
                 break; // 반복문 빠져나가기
         }
-        System.out.print("출금할 금액을 입력하세요>");
+        System.out.print("How much do you want to withdraw>");
         int amount = sc.nextInt();
         int result;
         try {
             result = account.withdraw(amount); // 잔액 > 출금액보다 큰 경우
-            System.out.println("출금액:" + result);
+            System.out.println("Withdraw:" + result);
         } catch (Exception e) { // 잔액 < 출금액보다 작은경우
             System.out.println(e.getMessage());
         }
@@ -95,29 +95,29 @@ public class KHJBank {
 
     private static void deposit() {
         if (!isRegistered()) {
-            System.out.println("먼저 계좌등록을 하세요");
+            System.out.println("No Account Exist.");
             return;
         }
         accountList();
-        System.out.println("입금할 계좌번호를 선택하세요>");
+        System.out.println("Choose account that you want to withdraw>");
         Account account;
         while (true) {
             String ano = sc.next();
             account = findAccount(ano);
             if (account == null)
-                System.out.println("계좌번호를 확인하세요>");
+                System.out.println("No Account Exist.");
             else
                 break;
         }
-        System.out.print("입금할 금액을 입력하세요>");
+        System.out.print("How much do you want to deposit?>");
         int amount = sc.nextInt();
         account.deposit(amount); // 입금 처리
-        System.out.println("예금 성공");
+        System.out.println("Deposit Completed");
     }
 
     private static void accountList() {
         if (!isRegistered()) {
-            System.out.println("먼저 계좌등록을 하세요");
+            System.out.println("No Account Exist.");
             return;
         }
         for (Account account : accountArray) {
@@ -130,18 +130,18 @@ public class KHJBank {
     private static void createAccount() {
         String ano = PREFIX + String.format(new DecimalFormat("0000").format(++seq));
         sc.nextLine(); // Clear the buffer
-        System.out.print("소유주명>");
+        System.out.print("Name>");
         String owner = sc.nextLine(); // Use nextLine() to read the entire line
         int amount = 0;
         boolean validInput = false;
 
         while (!validInput) {
             try {
-                System.out.print("초기입금액>");
+                System.out.print("Initial Deposit>");
                 amount = sc.nextInt();
                 validInput = true; // If we get here, the input was valid
             } catch (InputMismatchException e) {
-                System.out.println("잘못된 입력입니다. 숫자를 입력하세요.");
+                System.out.println("Wrong Input! Type in correct number.");
                 sc.next(); // Clear the invalid input from the scanner
             }
         }
@@ -149,7 +149,7 @@ public class KHJBank {
         for (int i = 0; i < accountArray.length; i++) {
             if (accountArray[i] == null) {
                 accountArray[i] = new Account(ano, owner, amount);
-                System.out.println("계좌 등록 성공");
+                System.out.println("Created Account");
                 isCreated = true;
                 break;
             }
