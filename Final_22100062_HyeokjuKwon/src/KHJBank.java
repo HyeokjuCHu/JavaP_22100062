@@ -6,8 +6,8 @@ public class KHJBank {
     private static Account[] accountArray = new Account[100];
     private static Scanner sc = new Scanner(System.in);
     private static final String PREFIX = "Bank-";
-    private static int seq = 0; // 계좌번호 자동발번
-    private static boolean isCreated = false; // 계좌등록여부
+    private static int seq = 0;
+    private static boolean isCreated = false; //계좌 등록
 
     public static void main(String[] args) {
         boolean runProgram = true;
@@ -58,7 +58,7 @@ public class KHJBank {
                         runProgram = false;
                         break;
                     case 6:
-                        run = false; // End the current session and go back to login menu
+                        run = false; // 다시 로그인 창으로 고
                         break;
                 }
             }
@@ -69,14 +69,14 @@ public class KHJBank {
     private static void withdraw() {
         if (!isRegistered()) {
             System.out.println("No Account Exist.");
-            return; // 메소드 실행 종료.
+            return; //종료
         }
         accountList();
         System.out.println("Choose account that you want to withdraw>");
         Account account;
         while (true) {
-            String ano = sc.next(); // 출금 계좌번호 입력
-            account = findAccount(ano); // 입력받은 정보로 계좌조회
+            String ano = sc.next(); // 계좌번호 입력
+            account = findAccount(ano); // 계좌조회
             if (account == null)
                 System.out.println("Check your account number");
             else
@@ -86,9 +86,9 @@ public class KHJBank {
         int amount = sc.nextInt();
         int result;
         try {
-            result = account.withdraw(amount); // 잔액 > 출금액보다 큰 경우
+            result = account.withdraw(amount); // 잔액 > 출금액
             System.out.println("Withdraw:" + result);
-        } catch (Exception e) { // 잔액 < 출금액보다 작은경우
+        } catch (Exception e) { // 잔액 < 출금액
             System.out.println(e.getMessage());
         }
     }
@@ -111,7 +111,7 @@ public class KHJBank {
         }
         System.out.print("How much do you want to deposit?>");
         int amount = sc.nextInt();
-        account.deposit(amount); // 입금 처리
+        account.deposit(amount); //입금
         System.out.println("Deposit Completed");
     }
 
@@ -129,7 +129,7 @@ public class KHJBank {
 
     private static void createAccount() {
         String ano = PREFIX + String.format(new DecimalFormat("0000").format(++seq));
-        sc.nextLine(); // Clear the buffer
+        sc.nextLine();
         System.out.print("Name>");
         String owner = sc.nextLine(); // Use nextLine() to read the entire line
         int amount = 0;
