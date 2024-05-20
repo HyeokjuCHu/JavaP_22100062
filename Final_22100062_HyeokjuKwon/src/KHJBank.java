@@ -131,7 +131,7 @@ public class KHJBank {
         String ano = PREFIX + String.format(new DecimalFormat("0000").format(++seq));
         sc.nextLine();
         System.out.print("Name>");
-        String owner = sc.nextLine(); // Use nextLine() to read the entire line
+        String owner = sc.nextLine();
         int amount = 0;
         boolean validInput = false;
 
