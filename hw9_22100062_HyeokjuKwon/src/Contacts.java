@@ -1,10 +1,7 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
-abstract class Person {
+abstract class Person implements Serializable {
     protected String type;
     protected String dept;
     protected String name;
@@ -29,7 +26,6 @@ abstract class Person {
         return dept;
     }
 }
-
 
 abstract class Student extends Person {
     public Student(String type, String dept, String name, String id, String email) {
@@ -102,38 +98,91 @@ public class Contacts {
         List<Person> contacts = new ArrayList<>();
 
         while (true) {
-            String input = scanner.nextLine();
-            String[] parts = input.split(", ");
+            try {
+                String input = scanner.nextLine();
+                String[] parts = input.split(", ");
 
-            if (parts[0].equals("print")) {
-                printContacts(contacts);
-            } else if (parts[0].equals("sort")) {
-                if (parts[1].equals("name")) {
-                    Collections.sort(contacts, Comparator.comparing(Person::getName)
-                            .thenComparing(Person::getDept));
-                } else if (parts[1].equals("dept")) {
-                    Collections.sort(contacts, Comparator.comparing(Person::getDept));
+                switch (parts[0]) {
+                    case "print":
+                        printContacts(contacts);
+                        break;
+                    case "sort":
+                        if (parts.length > 1) {
+                            sortContacts(contacts, parts[1]);
+                        } else {
+                            System.out.println("Error: Missing sort criteria (name/dept).");
+                        }
+                        break;
+                    case "loadText":
+                        if (parts.length > 1) {
+                            contacts = loadFromTextFile(parts[1]);
+                        } else {
+                            System.out.println("Error: Missing filename for loadText.");
+                        }
+                        break;
+                    case "saveText":
+                        if (parts.length > 1) {
+                            saveToTextFile(contacts, parts[1]);
+                        } else {
+                            System.out.println("Error: Missing filename for saveText.");
+                        }
+                        break;
+                    case "loadBinary":
+                        if (parts.length > 1) {
+                            contacts = loadFromBinaryFile(parts[1]);
+                        } else {
+                            System.out.println("Error: Missing filename for loadBinary.");
+                        }
+                        break;
+                    case "saveBinary":
+                        if (parts.length > 1) {
+                            saveToBinaryFile(contacts, parts[1]);
+                        } else {
+                            System.out.println("Error: Missing filename for saveBinary.");
+                        }
+                        break;
+                    case "exit":
+                        return;
+                    default:
+                        addContact(contacts, parts);
+                        break;
                 }
-            } else {
-                String type = parts[0];
-                String dept = parts.length > 1 ? parts[1] : "Not Yet Defined";
-                String name = parts.length > 2 ? parts[2] : "Not Yet Defined";
-                String id = parts.length > 3 ? parts[3] : "Not Yet Defined";
-                String email = parts.length > 4 ? parts[4] : "Not Yet Defined";
-
-                if (type.equals("Under")) {
-                    int studentNumber = Integer.parseInt(id);
-                    contacts.add(new Under(type, dept, name, id, email, studentNumber));
-                } else if (type.equals("Grad")) {
-                    int studentNumber = Integer.parseInt(id);
-                    contacts.add(new Grad(type, dept, name, id, email, studentNumber));
-                } else if (type.equals("Faculty")) {
-                    String facultyId = id;
-                    contacts.add(new Faculty(type, dept, name, id, email, facultyId));
-                } else if (type.equals("Staff")) {
-                    contacts.add(new Staff(type, dept, name, id, email));
-                }
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
             }
+        }
+    }
+
+    private static void addContact(List<Person> contacts, String[] parts) {
+        try {
+            String type = parts[0];
+            String dept = parts.length > 1 ? parts[1] : "Not Yet Defined";
+            String name = parts.length > 2 ? parts[2] : "Not Yet Defined";
+            String id = parts.length > 3 ? parts[3] : "Not Yet Defined";
+            String email = parts.length > 4 ? parts[4] : "Not Yet Defined";
+
+            switch (type) {
+                case "Under":
+                    int underStudentNumber = Integer.parseInt(id);
+                    contacts.add(new Under(type, dept, name, id, email, underStudentNumber));
+                    break;
+                case "Grad":
+                    int gradStudentNumber = Integer.parseInt(id);
+                    contacts.add(new Grad(type, dept, name, id, email, gradStudentNumber));
+                    break;
+                case "Faculty":
+                    contacts.add(new Faculty(type, dept, name, id, email, id));
+                    break;
+                case "Staff":
+                    contacts.add(new Staff(type, dept, name, id, email));
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid type: " + type);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid number format for ID: " + parts[3]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Insufficient input data.");
         }
     }
 
@@ -146,19 +195,79 @@ public class Contacts {
         for (Person person : contacts) {
             if (person instanceof Under) {
                 underCount++;
-                System.out.printf("%s %d, %s", person.type, underCount, person.dept);
+                System.out.printf("%s %d, %s\n", person.type, underCount, person.dept);
             } else if (person instanceof Grad) {
                 gradCount++;
-                System.out.printf("%s %d, %s", person.type, gradCount, person.dept);
+                System.out.printf("%s %d, %s\n", person.type, gradCount, person.dept);
             } else if (person instanceof Faculty) {
                 facultyCount++;
-                System.out.printf("%s %d, %s", person.type, facultyCount, person.dept);
+                System.out.printf("%s %d, %s\n", person.type, facultyCount, person.dept);
             } else if (person instanceof Staff) {
                 staffCount++;
-                System.out.printf("%s %d, %s", person.type, staffCount, person.dept);
+                System.out.printf("%s %d, %s\n", person.type, staffCount, person.dept);
             }
 
             person.writeOutput();
         }
+    }
+
+    private static void sortContacts(List<Person> contacts, String criteria) {
+        switch (criteria) {
+            case "name":
+                contacts.sort(Comparator.comparing(Person::getName).thenComparing(Person::getDept));
+                break;
+            case "dept":
+                contacts.sort(Comparator.comparing(Person::getDept));
+                break;
+            default:
+                System.out.println("Invalid sort criteria.");
+        }
+    }
+
+    private static void saveToTextFile(List<Person> contacts, String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            for (Person person : contacts) {
+                writer.write(person.type + ", " + person.dept + ", " + person.name + ", " + person.id + ", " + person.email);
+                writer.newLine();
+            }
+            System.out.println("Contacts saved to " + filename);
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+    private static List<Person> loadFromTextFile(String filename) {
+        List<Person> contacts = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(", ");
+                addContact(contacts, parts);
+            }
+            System.out.println("Contacts loaded from " + filename);
+        } catch (IOException e) {
+            System.out.println("Error reading from file: " + e.getMessage());
+        }
+        return contacts;
+    }
+
+    private static void saveToBinaryFile(List<Person> contacts, String filename) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
+            out.writeObject(contacts);
+            System.out.println("Contacts saved to binary file " + filename);
+        } catch (IOException e) {
+            System.out.println("Error writing to binary file: " + e.getMessage());
+        }
+    }
+
+    private static List<Person> loadFromBinaryFile(String filename) {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
+            List<Person> contacts = (List<Person>) in.readObject();
+            System.out.println("Contacts loaded from binary file " + filename);
+            return contacts;
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error reading from binary file: " + e.getMessage());
+        }
+        return new ArrayList<>();
     }
 }

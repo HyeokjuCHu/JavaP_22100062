@@ -1,0 +1,3 @@
+Grad, GLS, H. Choi, 2012310, hchoi@handing.edu
+Under, CSEE, Handong Kim, 20170000, hk@handing.edu
+Faculty, , Henry Choi, 10212, hc@handing.edu
