@@ -7,7 +7,6 @@ public class KHJBank {
     private static Scanner sc = new Scanner(System.in);
     private static final String PREFIX = "Bank-";
     private static int seq = 0;
-    private static boolean isCreated = false; //계좌 등록
 
     public static void main(String[] args) {
         boolean runProgram = true;
@@ -18,8 +17,9 @@ public class KHJBank {
                 System.out.println("-------------------------------------");
                 System.out.println("1. Sign Up | 2. Sign in | 3. End");
                 System.out.println("-------------------------------------");
-                System.out.print("Choice>");
+                System.out.print("Choice> ");
                 int selectNo = sc.nextInt();
+                sc.nextLine();  // Clear the buffer after nextInt()
                 switch (selectNo) {
                     case 1:
                         Login.register();
@@ -36,10 +36,11 @@ public class KHJBank {
             boolean run = true;
             while (run) {
                 System.out.println("-------------------------------------");
-                System.out.println("1.Create Account - 2.Account List - 3.Deposit - 4.Withdrawal - 5.End - 6.Log out");
+                System.out.println("1. Create Account - 2. Account List - 3. Deposit - 4. Withdraw - 5. End - 6. Log out");
                 System.out.println("-------------------------------------");
-                System.out.print("Choice>");
+                System.out.print("Choice> ");
                 int selectNo = sc.nextInt();
+                sc.nextLine();  // Clear the buffer after nextInt()
                 switch (selectNo) {
                     case 1:
                         createAccount();
@@ -58,7 +59,7 @@ public class KHJBank {
                         runProgram = false;
                         break;
                     case 6:
-                        run = false; // 다시 로그인 창으로 고
+                        run = false; // Go back to login screen
                         break;
                 }
             }
@@ -69,26 +70,28 @@ public class KHJBank {
     private static void withdraw() {
         if (!isRegistered()) {
             System.out.println("No Account Exist.");
-            return; //종료
+            return;
         }
         accountList();
-        System.out.println("Choose account that you want to withdraw>");
+        System.out.println("Choose account that you want to withdraw from>");
         Account account;
         while (true) {
-            String ano = sc.next(); // 계좌번호 입력
-            account = findAccount(ano); // 계좌조회
+            String ano = sc.next();
+            sc.nextLine();  // Clear the buffer after next()
+            account = findAccount(ano);
             if (account == null)
                 System.out.println("Check your account number");
             else
-                break; // 반복문 빠져나가기
+                break;
         }
-        System.out.print("How much do you want to withdraw>");
+        System.out.print("How much do you want to withdraw> ");
         int amount = sc.nextInt();
+        sc.nextLine();  // Clear the buffer after nextInt()
         int result;
         try {
-            result = account.withdraw(amount); // 잔액 > 출금액
-            System.out.println("Withdraw:" + result);
-        } catch (Exception e) { // 잔액 < 출금액
+            result = account.withdraw(amount);
+            System.out.println("Withdraw: " + result);
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -99,19 +102,21 @@ public class KHJBank {
             return;
         }
         accountList();
-        System.out.println("Choose account that you want to withdraw>");
+        System.out.println("Choose account that you want to deposit into>");
         Account account;
         while (true) {
             String ano = sc.next();
+            sc.nextLine();  // Clear the buffer after next()
             account = findAccount(ano);
             if (account == null)
                 System.out.println("No Account Exist.");
             else
                 break;
         }
-        System.out.print("How much do you want to deposit?>");
+        System.out.print("How much do you want to deposit?> ");
         int amount = sc.nextInt();
-        account.deposit(amount); //입금
+        sc.nextLine();  // Clear the buffer after nextInt()
+        account.deposit(amount);
         System.out.println("Deposit Completed");
     }
 
@@ -130,16 +135,17 @@ public class KHJBank {
     private static void createAccount() {
         String ano = PREFIX + String.format(new DecimalFormat("0000").format(++seq));
         sc.nextLine();
-        System.out.print("Name>");
+        System.out.print("Name> ");
         String owner = sc.nextLine();
         int amount = 0;
         boolean validInput = false;
 
         while (!validInput) {
             try {
-                System.out.print("Initial Deposit>");
+                System.out.print("Initial Deposit> ");
                 amount = sc.nextInt();
-                validInput = true; // If we get here, the input was valid
+                sc.nextLine();  // Clear the buffer after nextInt()
+                validInput = true;
             } catch (InputMismatchException e) {
                 System.out.println("Wrong Input! Type in correct number.");
                 sc.next(); // Clear the invalid input from the scanner
@@ -150,23 +156,26 @@ public class KHJBank {
             if (accountArray[i] == null) {
                 accountArray[i] = new Account(ano, owner, amount);
                 System.out.println("Created Account");
-                isCreated = true;
                 break;
             }
         }
     }
 
     private static boolean isRegistered() {
-        return isCreated;
+        for (Account account : accountArray) {
+            if (account != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static Account findAccount(String ano) {
-        Account account = null;
-        for (Account acc : accountArray) {
-            if (acc != null && acc.getAno().equals(ano)) {
-                account = acc;
+        for (Account account : accountArray) {
+            if (account != null && account.getAno().equals(ano)) {
+                return account;
             }
         }
-        return account;
+        return null;
     }
 }
