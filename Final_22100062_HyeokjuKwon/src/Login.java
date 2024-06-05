@@ -8,9 +8,9 @@ public class Login {
 
     public static void register() {
         System.out.print("Enter new username: ");
-        String username = sc.nextLine();  // Changed from sc.next() to sc.nextLine()
+        String username = sc.next();
         System.out.print("Enter new password: ");
-        String password = sc.nextLine();  // Changed from sc.next() to sc.nextLine()
+        String password = sc.next();
 
         for (User user : users) {
             if (user.getUsername().equals(username)) {
@@ -25,9 +25,9 @@ public class Login {
 
     public static boolean login() {
         System.out.print("Enter username: ");
-        String username = sc.nextLine();  // Changed from sc.next() to sc.nextLine()
+        String username = sc.next();
         System.out.print("Enter password: ");
-        String password = sc.nextLine();  // Changed from sc.next() to sc.nextLine()
+        String password = sc.next();
 
         for (User user : users) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
@@ -37,5 +37,9 @@ public class Login {
         }
         System.out.println("Invalid username or password.");
         return false;
+    }
+
+    public static List<User> getUsers() {
+        return users;
     }
 }
