@@ -4,17 +4,17 @@ import java.util.Scanner;
 
 public class Login {
     private static List<User> users = new ArrayList<>();
-    private static Scanner sc = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
 
-    public static void register() {
+    public static void registerUser() {
         System.out.print("Enter new username: ");
-        String username = sc.next();
+        String username = scanner.next();
         System.out.print("Enter new password: ");
-        String password = sc.next();
+        String password = scanner.next();
 
         for (User user : users) {
             if (user.getUsername().equals(username)) {
-                System.out.println("Username already exists. Try another one.");
+                System.out.println("Username already exists. Please try a different one.");
                 return;
             }
         }
@@ -23,11 +23,11 @@ public class Login {
         System.out.println("User registered successfully.");
     }
 
-    public static boolean login() {
+    public static boolean authenticate() {
         System.out.print("Enter username: ");
-        String username = sc.next();
+        String username = scanner.next();
         System.out.print("Enter password: ");
-        String password = sc.next();
+        String password = scanner.next();
 
         for (User user : users) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {

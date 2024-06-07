@@ -3,190 +3,188 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class KHJBank {
-    private static Account[] accountArray = new Account[100];
-    private static Scanner sc = new Scanner(System.in);
+    private static Account[] accounts = new Account[100];
+    private static Scanner scanner = new Scanner(System.in);
     private static final String PREFIX = "Bank-";
-    private static int seq = 0;
-    private static boolean isCreated = false; //계좌 등록
+    private static int sequence = 0;
+    private static boolean accountCreated = false;
 
     public static void main(String[] args) {
-        boolean runProgram = true;
+        boolean isRunning = true;
 
-        while (runProgram) {
-            boolean loggedIn = false;
-            while (!loggedIn) {
+        while (isRunning) {
+            boolean isLoggedIn = false;
+            while (!isLoggedIn) {
                 System.out.println("-------------------------------------");
-                System.out.println("1. Sign Up | 2. Sign in | 3. End");
+                System.out.println("1. Register | 2. Log in | 3. Exit");
                 System.out.println("-------------------------------------");
-                System.out.print("Choice>");
-                int selectNo = sc.nextInt();
-                switch (selectNo) {
+                System.out.print("Select an option: ");
+                int choice = scanner.nextInt();
+                switch (choice) {
                     case 1:
-                        Login.register();
+                        Login.registerUser();
                         break;
                     case 2:
-                        loggedIn = Login.login();
+                        isLoggedIn = Login.authenticate();
                         break;
                     case 3:
-                        System.out.println("End Program");
+                        System.out.println("Exiting program.");
                         return;
                 }
             }
 
-            boolean run = true;
-            while (run) {
+            boolean sessionActive = true;
+            while (sessionActive) {
                 System.out.println("-------------------------------------");
-                System.out.println("1.Create Account - 2.Account List - 3.Deposit - 4.Withdrawal - 5.View Transaction History - 6.Delete Account - 7.End - 8.Log out");
+                System.out.println("1. Open Account - 2. List Accounts - 3. Deposit - 4. Withdraw - 5. View Transactions - 6. Delete Account - 7. Exit - 8. Log out");
                 System.out.println("-------------------------------------");
-                System.out.print("Choice>");
-                int selectNo = sc.nextInt();
-                switch (selectNo) {
+                System.out.print("Select an option: ");
+                int choice = scanner.nextInt();
+                switch (choice) {
                     case 1:
                         createAccount();
                         break;
                     case 2:
-                        accountList();
+                        listAccounts();
                         break;
                     case 3:
-                        deposit();
+                        depositAmount();
                         break;
                     case 4:
-                        withdraw();
+                        withdrawAmount();
                         break;
                     case 5:
-                        viewTransactionHistory();
+                        showTransactionHistory();
                         break;
                     case 6:
                         deleteUser();
                         break;
                     case 7:
-                        run = false;
-                        runProgram = false;
+                        sessionActive = false;
+                        isRunning = false;
                         break;
                     case 8:
-                        run = false; // 다시 로그인 창으로 고
+                        sessionActive = false;
                         break;
                 }
             }
         }
-        System.out.println("Terminated Program");
+        System.out.println("Program terminated.");
     }
 
-    private static void withdraw() {
-        if (!isRegistered()) {
-            System.out.println("No Account Exist.");
-            return; //종료
+    private static void withdrawAmount() {
+        if (!hasAccounts()) {
+            System.out.println("No accounts available.");
+            return;
         }
-        accountList();
-        System.out.println("Choose account that you want to withdraw>");
+        listAccounts();
+        System.out.print("Enter account number to withdraw from: ");
         Account account;
         while (true) {
-            String ano = sc.next(); // 계좌번호 입력
-            account = findAccount(ano); // 계좌조회
+            String accountNumber = scanner.next();
+            account = findAccount(accountNumber);
             if (account == null)
-                System.out.println("Check your account number");
+                System.out.println("Invalid account number, try again.");
             else
-                break; // 반복문 빠져나가기
+                break;
         }
-        System.out.print("How much do you want to withdraw>");
-        int amount = sc.nextInt();
-        int result;
+        System.out.print("Enter withdrawal amount: ");
+        int amount = scanner.nextInt();
         try {
-            result = account.withdraw(amount); // 잔액 > 출금액
-            System.out.println("Withdraw:" + result);
-        } catch (Exception e) { // 잔액 < 출금액
+            int withdrawn = account.withdraw(amount);
+            System.out.println("Withdrawn: " + withdrawn);
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private static void deposit() {
-        if (!isRegistered()) {
-            System.out.println("No Account Exist.");
+    private static void depositAmount() {
+        if (!hasAccounts()) {
+            System.out.println("No accounts available.");
             return;
         }
-        accountList();
-        System.out.println("Choose account that you want to withdraw>");
+        listAccounts();
+        System.out.print("Enter account number to deposit into: ");
         Account account;
         while (true) {
-            String ano = sc.next();
-            account = findAccount(ano);
+            String accountNumber = scanner.next();
+            account = findAccount(accountNumber);
             if (account == null)
-                System.out.println("No Account Exist.");
+                System.out.println("Invalid account number, try again.");
             else
                 break;
         }
-        System.out.print("How much do you want to deposit?>");
-        int amount = sc.nextInt();
-        account.deposit(amount); //입금
-        System.out.println("Deposit Completed");
+        System.out.print("Enter deposit amount: ");
+        int amount = scanner.nextInt();
+        account.deposit(amount);
+        System.out.println("Deposit successful.");
     }
 
-    private static void accountList() {
-        if (!isRegistered()) {
-            System.out.println("No Account Exist.");
+    private static void listAccounts() {
+        if (!hasAccounts()) {
+            System.out.println("No accounts available.");
             return;
         }
-        for (Account account : accountArray) {
+        for (Account account : accounts) {
             if (account != null) {
-                System.out.println(account.getAno() + " " + account.getOwner() + " " + account.getBalance());
+                System.out.println(account.getAccountNumber() + " " + account.getOwner() + " " + account.getBalance());
             }
         }
     }
 
     private static void createAccount() {
-        String ano = PREFIX + String.format(new DecimalFormat("0000").format(++seq));
-        sc.nextLine();
-        System.out.print("Name>");
-        String owner = sc.nextLine();
-        int amount = 0;
+        String accountNumber = PREFIX + new DecimalFormat("0000").format(++sequence);
+        scanner.nextLine();
+        System.out.print("Enter your name: ");
+        String owner = scanner.nextLine();
+        int initialDeposit = 0;
         boolean validInput = false;
 
         while (!validInput) {
             try {
-                System.out.print("Initial Deposit>");
-                amount = sc.nextInt();
-                validInput = true; // If we get here, the input was valid
+                System.out.print("Enter initial deposit: ");
+                initialDeposit = scanner.nextInt();
+                validInput = true;
             } catch (InputMismatchException e) {
-                System.out.println("Wrong Input! Type in correct number.");
-                sc.next(); // Clear the invalid input from the scanner
+                System.out.println("Invalid input, please enter a number.");
+                scanner.next();
             }
         }
 
-        for (int i = 0; i < accountArray.length; i++) {
-            if (accountArray[i] == null) {
-                accountArray[i] = new Account(ano, owner, amount);
-                System.out.println("Created Account");
-                isCreated = true;
+        for (int i = 0; i < accounts.length; i++) {
+            if (accounts[i] == null) {
+                accounts[i] = new Account(accountNumber, owner, initialDeposit);
+                System.out.println("Account created successfully.");
+                accountCreated = true;
                 break;
             }
         }
     }
 
-    private static boolean isRegistered() {
-        return isCreated;
+    private static boolean hasAccounts() {
+        return accountCreated;
     }
 
-    private static Account findAccount(String ano) {
-        Account account = null;
-        for (Account acc : accountArray) {
-            if (acc != null && acc.getAno().equals(ano)) {
-                account = acc;
+    private static Account findAccount(String accountNumber) {
+        for (Account account : accounts) {
+            if (account != null && account.getAccountNumber().equals(accountNumber)) {
+                return account;
             }
         }
-        return account;
+        return null;
     }
 
-    private static void viewTransactionHistory() {
-        if (!isRegistered()) {
-            System.out.println("No Account Exist.");
+    private static void showTransactionHistory() {
+        if (!hasAccounts()) {
+            System.out.println("No accounts available.");
             return;
         }
-        accountList();
-        System.out.println("Enter account number:");
-        String ano = sc.next();
-        Account account = findAccount(ano);
+        listAccounts();
+        System.out.print("Enter account number: ");
+        String accountNumber = scanner.next();
+        Account account = findAccount(accountNumber);
         if (account == null) {
-            System.out.println("No Account Exist.");
+            System.out.println("Invalid account number.");
             return;
         }
 
@@ -197,9 +195,9 @@ public class KHJBank {
 
     private static void deleteUser() {
         System.out.print("Enter username: ");
-        String username = sc.next();
+        String username = scanner.next();
         System.out.print("Enter password: ");
-        String password = sc.next();
+        String password = scanner.next();
 
         for (int i = 0; i < Login.getUsers().size(); i++) {
             User user = Login.getUsers().get(i);

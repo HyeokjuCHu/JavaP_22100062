@@ -2,42 +2,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Account {
-    // 필드
-    private String ano; // 계좌번호
-    private String owner; // 소유주
-    private int balance; // 잔고
-    private List<String> transactionHistory = new ArrayList<>(); // 거래 내역
+    private String accountNumber;
+    private String owner;
+    private int balance;
+    private List<String> transactionHistory = new ArrayList<>();
 
-    // 생성자
-    public Account(String ano, String owner, int balance) {
-        this.ano = ano;
+    public Account(String accountNumber, String owner, int balance) {
+        this.accountNumber = accountNumber;
         this.owner = owner;
         this.balance = balance;
         transactionHistory.add("Account created with initial deposit: " + balance);
     }
 
-    // 메소드
-    protected String getAno() {
-        return ano;
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
-    protected void setAno(String ano) {
-        this.ano = ano;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
-    protected String getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    protected void setOwner(String owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
-    protected int getBalance() {
+    public int getBalance() {
         return balance;
     }
 
-    protected void setBalance(int balance) {
+    public void setBalance(int balance) {
         this.balance = balance;
     }
 
@@ -48,10 +45,10 @@ public class Account {
 
     public int withdraw(int amount) throws Exception {
         if (this.balance < amount) {
-            throw new Exception("No Enough Money");
-        } else { // this.balance >= amount
+            throw new Exception("Insufficient funds");
+        } else {
             this.balance -= amount;
-            transactionHistory.add("Withdraw: " + amount);
+            transactionHistory.add("Withdrawal: " + amount);
             return amount;
         }
     }
