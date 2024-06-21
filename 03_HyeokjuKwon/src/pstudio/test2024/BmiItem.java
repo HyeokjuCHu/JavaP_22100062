@@ -77,7 +77,7 @@ public class BmiItem {
 
     @Override
     public String toString() {
-        return String.format("%-15s", name) + " [h:" + height + ", w:" + weight + "] " + String.format("%.1f", bmi) + " - " + level + " - "
-                + new SimpleDateFormat("HH:mm:ss").format(reg_date);
+        return String.format("%-15s", name) + " [h:" + height + ", w:" + weight + "] " + String.format("%.1f", bmi) + "/" + level + "/"
+                + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(reg_date);
     }
 }

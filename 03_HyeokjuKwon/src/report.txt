@@ -1,0 +1,11 @@
+Kenny Gee       [h:170, w:95] 32.9/Obesity/2024-06-21 15:26:34
+Jay Lee         [h:190, w:65] 18.0/Underweight/2024-06-21 15:26:34
+Clara Park      [h:165, w:46] 16.9/Underweight/2024-06-21 15:26:34
+Matthew Choi    [h:175, w:76] 24.8/Healthy Weight/2024-06-21 15:26:34
+Mary Yoo        [h:160, w:54] 21.1/Healthy Weight/2024-06-21 15:26:34
+Wayne Wang      [h:154, w:51] 21.5/Healthy Weight/2024-06-21 15:26:34
+John Doe        [h:178, w:99] 31.2/Obesity/2024-06-21 15:26:34
+1) Underweight - 2 (average 17.5)
+2) Healthy Weight - 3 (average 22.5)
+3) Overweight - 0 (average NaN)
+4) Obesity - 2 (average 32.1)
